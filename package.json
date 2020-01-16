@@ -9,6 +9,7 @@
   "author": "Piotr Stadnicki",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "is-my-json-valid": "^2.20.0",
