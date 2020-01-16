@@ -19,6 +19,15 @@ const transporter = nodemailer.createTransport({
     }
   });
 
+function IsJsonString(str) {
+  var data = false;  
+  try {
+        data = JSON.parse(str);
+    } catch (e) {
+        data = false;
+    }
+    return data;
+}
 
 var validate = validator({
     required: true,
@@ -46,17 +55,16 @@ var validate = validator({
 app.use(express.json());
 
 app.post('/sendmail', cors(corsOptions), async function (req, res) {
-    var correctjson = validate(req.body);
+    var data = IsJsonString(req.body);
+    var correctjson = validate(data);
     if(correctjson)
     {
         try
         {
-            var object = req.body;
-
             let info = await transporter.sendMail({
                 to: process.env.TO_ADDRESS, // list of receivers
-                subject: "Wiadomość od " + object.name + " <" + object.email + ">",
-                text: "Temat: " + object.title + "\nWiadomość: " + object.message
+                subject: "Wiadomość od " + data.name + " <" + data.email + ">",
+                text: "Temat: " + data.title + "\nWiadomość: " + data.message
               })
             
             console.log("Done");
@@ -70,6 +78,7 @@ app.post('/sendmail', cors(corsOptions), async function (req, res) {
     }
     else
     {
+        console.log("Invalid json format");
         res.send("Invalid json format");
     }
     console.log(req.body);
