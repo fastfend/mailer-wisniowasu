@@ -3,6 +3,11 @@ const app = express();
 const validator = require('is-my-json-valid');
 const nodemailer = require("nodemailer");
 const dotenv = require('dotenv').config()
+var cors = require('cors')
+var corsOptions = {
+  origin: process.env.DOMAIN_ORIGIN,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -40,7 +45,7 @@ var validate = validator({
 
 app.use(express.json());
 
-app.post('/sendmail', async function (req, res) {
+app.post('/sendmail', cors(corsOptions), async function (req, res) {
     var correctjson = validate(req.body);
     if(correctjson)
     {
